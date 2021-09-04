@@ -9,7 +9,7 @@
 # toolbar-extension
 Can add any UI display to the toolbar.
 
-This feature is one of the "UniExtensions" developed by jwellone Inc for Unity.
+This feature is one of the "j1Tech" developed by jwellone Inc for Unity.
 
 
 ## Getting Started
