@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using UniExtensions.Editor.Toolbar;
+using jwellone.Toolbar.Editor;
 
 namespace Sample.Editor
 {

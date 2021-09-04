@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace UniExtensions.Editor.Toolbar
+namespace jwellone.Toolbar.Editor
 {
 	using IGUI = IToolbarUI;
 

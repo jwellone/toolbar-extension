@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UniExtensions.Editor.Toolbar
+namespace jwellone.Toolbar.Editor
 {
 	public class ToolbarLabel : ToolbarUI
 	{

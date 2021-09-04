@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace UniExtensions.Editor.Toolbar
+namespace jwellone.Toolbar.Editor
 {
 	public class ToolbarGradientField : ToolbarUI
 	{
