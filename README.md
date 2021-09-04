@@ -16,7 +16,7 @@ This feature is one of the "j1Tech" developed by jwellone Inc for Unity.
 - Import the package.
 - If you use the Toolbar Extension class and add a class that inherits the Toolbar interface, 
   you can display the UI on the toolbar.
-- [Here is a sample program.](https://github.com/jwellone/toolbar-extension/blob/main/Assets/Sample/Editor/SampleToolbarExtension.cs) 
+- [Here is a sample program.](https://github.com/jwellone/toolbar-extension/blob/main/Assets/jwellone/ToolbarExtension/Sample/Editor/SampleToolbarExtension.cs) 
 
 ![toolbar-extension](https://user-images.githubusercontent.com/85072161/127740712-af77af61-f064-441d-88e4-34b1e77c285b.gif)
 
