@@ -25,8 +25,8 @@ This feature is one of the "j1Tech" developed by jwellone Inc for Unity.
 Developer:[Yasuhiko Usui.](https://github.com/UsuiYasuhiko-jw1)
 
 
-[![GitHub watchers](https://img.shields.io/github/watchers/jwellone/toolbar-extension.svg?style=social&label=Watch)](https://GitHub.com/jwellone/test/watchers/)
-[![GitHub stars](https://img.shields.io/github/stars/jwellone/toolbar-extension.svg?style=social&label=Stars)](https://GitHub.com/jwellone/github-test/stargazers)
-[![GitHub fork](https://img.shields.io/github/forks/jwellone/toolbar-extension.svg?style=social&label=Fork)](https://GitHub.com/jwellone/github-test/network/members)
+[![GitHub watchers](https://img.shields.io/github/watchers/jwellone/toolbar-extension.svg?style=social&label=Watch)](https://GitHub.com/jwellone/toolbar-extension/watchers/)
+[![GitHub stars](https://img.shields.io/github/stars/jwellone/toolbar-extension.svg?style=social&label=Stars)](https://GitHub.com/jwellone/toolbar-extension/stargazers)
+[![GitHub fork](https://img.shields.io/github/forks/jwellone/toolbar-extension.svg?style=social&label=Fork)](https://GitHub.com/jwellone/toolbar-extension/network/members)
 [![Twitter](https://img.shields.io/twitter/follow/jwellone?label=Twitter&logo=twitter&style=social)](http://twitter.com/jwellone)
 [![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white&style=plastic)](https://www.facebook.com/jwellone)
