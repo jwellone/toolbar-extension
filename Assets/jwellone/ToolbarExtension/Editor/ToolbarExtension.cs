@@ -15,18 +15,6 @@ namespace jwellone.Toolbar.Editor
 		static readonly Type TOOLBAR_TYPE = typeof(EditorGUI).Assembly.GetType("UnityEditor.Toolbar");
 		static readonly FieldInfo TOOLBAR_GET = TOOLBAR_TYPE.GetField("get");
 
-#if UNITY_2019
-		private static readonly Type GUI_VIEW_TYPE = typeof(EditorGUI).Assembly.GetType("UnityEditor.GUIView");
-		private static readonly PropertyInfo GUI_VIEW_IMGUI_CONTAINER = GUI_VIEW_TYPE.GetProperty("imguiContainer", BINDING_ATTR);
-		private static readonly FieldInfo IMGUI_CONTAINER_ON_GUI_HANDLER = typeof(IMGUIContainer).GetField("m_OnGUIHandler", BINDING_ATTR);
-#else
-		private static Type GUI_VIEW_TYPE = typeof(EditorGUI).Assembly.GetType("UnityEditor.GUIView");
-		private static PropertyInfo WINDOW_BACKEND = GUI_VIEW_TYPE.GetProperty("windowBackend", BINDING_ATTR);
-		private static Type IWINDOW_BACKEND = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.IWindowBackend");
-		private static PropertyInfo VISUAL_TREE = IWINDOW_BACKEND.GetProperty("visualTree", BINDING_ATTR);
-		private static FieldInfo IMGUI_CONTAINER_ON_GUI_HANDLER = typeof(IMGUIContainer).GetField("m_OnGUIHandler", BINDING_ATTR);
-#endif
-
 		const float AREA_HEIGHT = 22;
 		const float LEFT_AREA_POS_X = 410;
 		const float LEFT_AREA_OFFSET_POS_X = -72;
@@ -89,18 +77,26 @@ namespace jwellone.Toolbar.Editor
 				}
 
 #if UNITY_2019
-				var imguiContainer = GUI_VIEW_IMGUI_CONTAINER.GetValue(toolbar, null) as IMGUIContainer;
-				var handler = IMGUI_CONTAINER_ON_GUI_HANDLER.GetValue(imguiContainer) as Action;
+				var guiViewType = typeof(EditorGUI).Assembly.GetType("UnityEditor.GUIView");
+				var guiViewImguiContainer = guiViewType.GetProperty("imguiContainer", BINDING_ATTR);
+				var onGUIHandle = typeof(IMGUIContainer).GetField("m_OnGUIHandler", BINDING_ATTR);
+				var imguiContainer = guiViewImguiContainer.GetValue(toolbar, null) as IMGUIContainer;
+				var handler = onGUIHandle.GetValue(imguiContainer) as Action;
 #else
-				var visualElement = VISUAL_TREE.GetValue(WINDOW_BACKEND.GetValue(toolbar), null) as VisualElement;
+				var guiViewType = typeof(EditorGUI).Assembly.GetType("UnityEditor.GUIView");
+				var windowBackend = guiViewType.GetProperty("windowBackend", BINDING_ATTR);
+				var iWindowBackend = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.IWindowBackend");
+				var visualTree = iWindowBackend.GetProperty("visualTree", BINDING_ATTR);
+				var onGUIHandle = typeof(IMGUIContainer).GetField("m_OnGUIHandler", BINDING_ATTR);
+				var visualElement = visualTree.GetValue(windowBackend.GetValue(toolbar), null) as VisualElement;
 				var imguiContainer = visualElement[0] as IMGUIContainer;
-				var handler = IMGUI_CONTAINER_ON_GUI_HANDLER.GetValue(imguiContainer) as Action;
+				var handler = onGUIHandle.GetValue(imguiContainer) as Action;
 #endif
 
 				handler -= OnGUI;
 				handler += OnGUI;
 
-				IMGUI_CONTAINER_ON_GUI_HANDLER.SetValue(imguiContainer, handler);
+				onGUIHandle.SetValue(imguiContainer, handler);
 #endif
 			}
 			catch (Exception ex)
