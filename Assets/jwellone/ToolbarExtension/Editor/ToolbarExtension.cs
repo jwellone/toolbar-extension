@@ -47,6 +47,41 @@ namespace jwellone.Toolbar.Editor
 		{
 			try
 			{
+#if UNITY_2021_1_OR_NEWER
+				var toolbars = Resources.FindObjectsOfTypeAll(TOOLBAR_TYPE);
+				var toolbar = toolbars.Length > 0 ? toolbars[0] : null;
+				if (toolbar == null)
+				{
+					return;
+				}
+
+				var fieldInfo = toolbar.GetType().GetField("m_Root", BINDING_ATTR);
+				var rootElement = fieldInfo.GetValue(toolbar) as VisualElement;
+				var areaNames = new string[] { "ToolbarZoneLeftAlign", "ToolbarZoneRightAlign" };
+				var actions = new Action[] { OnGUILeft, OnGUIRight };
+				for (var i = 0; i < actions.Length; ++i)
+				{
+					var area = rootElement.Q(areaNames[i]);
+					var element = new VisualElement()
+					{
+						style = {
+							flexGrow = 1,
+							flexDirection = FlexDirection.Row,
+						}
+					};
+					var container = new IMGUIContainer()
+					{
+						style =
+						{
+							flexGrow = 1
+						}
+					};
+					container.onGUIHandler += actions[i];
+					element.Add(container);
+					area.Add(element);
+				}
+#else
+
 				var toolbar = TOOLBAR_GET.GetValue(null);
 				if (toolbar == null)
 				{
@@ -66,6 +101,7 @@ namespace jwellone.Toolbar.Editor
 				handler += OnGUI;
 
 				IMGUI_CONTAINER_ON_GUI_HANDLER.SetValue(imguiContainer, handler);
+#endif
 			}
 			catch (Exception ex)
 			{
@@ -83,6 +119,21 @@ namespace jwellone.Toolbar.Editor
 			var leftAreaWidth = centerX + LEFT_AREA_OFFSET_POS_X - LEFT_AREA_POS_X;
 			GUILayout.BeginArea(new Rect(LEFT_AREA_POS_X, 4, leftAreaWidth, AREA_HEIGHT));
 
+			OnGUILeft();
+
+			GUILayout.EndArea();
+
+			var rightAreaPosX = centerX + RIGHT_AREA_OFFSET_POS_X;
+			var rightAreaWidth = editorWidth + RIGHT_AREA_OFFSET_WIDTH - rightAreaPosX;
+			GUILayout.BeginArea(new Rect(rightAreaPosX, 4, rightAreaWidth, AREA_HEIGHT));
+
+			OnGUIRight();
+
+			GUILayout.EndArea();
+		}
+
+		static void OnGUILeft()
+		{
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 
@@ -92,23 +143,17 @@ namespace jwellone.Toolbar.Editor
 			}
 
 			GUILayout.EndHorizontal();
-			GUILayout.EndArea();
+		}
 
-			var rightAreaPosX = centerX + RIGHT_AREA_OFFSET_POS_X;
-			var rightAreaWidth = editorWidth + RIGHT_AREA_OFFSET_WIDTH - rightAreaPosX;
-			GUILayout.BeginArea(new Rect(rightAreaPosX, 4, rightAreaWidth, AREA_HEIGHT));
-
+		static void OnGUIRight()
+		{
 			GUILayout.BeginHorizontal();
-
 			foreach (var ui in s_rightAreaGuis)
 			{
 				ui.OnGUI();
 			}
-
 			GUILayout.FlexibleSpace();
-
 			GUILayout.EndHorizontal();
-			GUILayout.EndArea();
 		}
 
 		public static void AddLeftArea(in IGUI ui)
