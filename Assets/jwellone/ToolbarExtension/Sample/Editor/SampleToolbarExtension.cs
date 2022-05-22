@@ -23,10 +23,15 @@ namespace Sample.Editor
 					Debug.Log($"index->{index}");
 				}));
 
+			ToolbarExtension.AddRightArea(new ToolbarSlider("slider",0,0,100,(result)=>
+			{
+				Debug.Log($"result->{result}");
+			}));
 
-			ToolbarExtension.AddRightArea(new ToolbarSlider("slider"));
-
-			ToolbarExtension.AddRightArea(new ToolbarToggle("toggle", "toggle"));
+			ToolbarExtension.AddRightArea(new ToolbarToggle("toggle", "toggle", false, (result)=>
+			{
+				Debug.Log($"result->{result}");
+			}));
 
 			ToolbarExtension.AddRightArea(new ToolbarGradientField("gradient", new Gradient()));
 		}
