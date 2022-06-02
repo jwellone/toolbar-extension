@@ -14,12 +14,11 @@ This feature is one of the "j1Tech" developed by jwellone Inc for Unity.
 
 ## Getting Started
 - Import the package.
-- If you use the Toolbar Extension class and add a class that inherits the Toolbar interface, 
-  you can display the UI on the toolbar.
-- [Here is a sample program.](https://github.com/jwellone/toolbar-extension/blob/main/Assets/jwellone/ToolbarExtension/Sample/Editor/SampleToolbarExtension.cs) 
+- Open Project Settings and select jwellone > Toolbar.
+- Press the + button to add any item or edit an existing item.
+If you inherited the ToolbarUI class and created your own class, you can add it using the + button.
 
-![toolbar-extension](https://user-images.githubusercontent.com/85072161/127740712-af77af61-f064-441d-88e4-34b1e77c285b.gif)
-
+https://user-images.githubusercontent.com/85072161/171630716-77d6f4fe-0900-4acb-9edf-8f5e24f2c2a7.mp4
 
 ## Authors
 Developer:[Yasuhiko Usui.](https://github.com/UsuiYasuhiko-jw1)
