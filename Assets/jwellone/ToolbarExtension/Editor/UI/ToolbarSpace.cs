@@ -2,24 +2,30 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace jwellone.Toolbar.Editor
+#nullable enable
+
+namespace jwelloneEditor.Toolbar
 {
-	public class ToolbarSpace : ToolbarUI
-	{
-		public bool Expand { get; set; } = true;
+    [Serializable]
+    public class ToolbarSpace : ToolbarUI
+    {
+        [SerializeField] int _space = 10;
+        public override void OnGUI()
+        {
+            EditorGUILayout.Space(_space);
+        }
 
-		public float Width { get; set; } = 6f;
+        public override Rect OnProjectSettingsGUI(Rect rect)
+        {
+            rect = base.OnProjectSettingsGUI(rect);
 
-		public ToolbarSpace(string name = "", bool expand = true, float width = 6f)
-		{
-			Name = name;
-			Expand = expand;
-			Width = width;
-		}
-
-		public override void OnGUI()
-		{
-			EditorGUILayout.Space(Width, Expand);
-		}
-	}
+            rect.x += rect.width + 16;
+            rect.y += 3;
+            rect.width = 120;
+            rect.height = 18;
+            _space = EditorGUI.IntField(rect, _space);
+            
+            return rect;
+        }
+    }
 }
