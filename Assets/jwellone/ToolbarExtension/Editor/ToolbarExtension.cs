@@ -5,15 +5,14 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace jwellone.Toolbar.Editor
-{
-	using IGUI = IToolbarUI;
+#nullable enable
 
+namespace jwelloneEditor.Toolbar
+{
 	public static class ToolbarExtension
 	{
-		private const BindingFlags BINDING_ATTR = (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+		const BindingFlags BINDING_ATTR = (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 		static readonly Type TOOLBAR_TYPE = typeof(EditorGUI).Assembly.GetType("UnityEditor.Toolbar");
-		static readonly FieldInfo TOOLBAR_GET = TOOLBAR_TYPE.GetField("get");
 
 		const float AREA_HEIGHT = 22;
 		const float LEFT_AREA_POS_X = 410;
@@ -21,11 +20,41 @@ namespace jwellone.Toolbar.Editor
 		const float RIGHT_AREA_OFFSET_POS_X = 28;
 		const float RIGHT_AREA_OFFSET_WIDTH = -376;
 
-		static List<IGUI> s_leftAreaGuis = new List<IGUI>();
-		static List<IGUI> s_rightAreaGuis = new List<IGUI>();
+		static UnityEngine.Object? _toolbar;
+		static MethodInfo? _repaintMethod;
+		static List<ToolbarUI> uiList => ToolbarCacheData.uiList;
+
+		static UnityEngine.Object? toolbar
+		{
+			get
+			{
+				if(_toolbar==null)
+				{
+					var toolbars = Resources.FindObjectsOfTypeAll(TOOLBAR_TYPE);
+					if (toolbars.Length > 0)
+					{
+						_toolbar = toolbars[0];
+					}
+				}
+
+				return _toolbar;
+			}
+		}
+
+		static MethodInfo? repaintMethod
+		{
+			get
+			{
+				if(_repaintMethod==null)
+				{
+					_repaintMethod = toolbar?.GetType().GetMethod("RepaintToolbar", BindingFlags.Static | BindingFlags.NonPublic);
+				}
+				return _repaintMethod;
+			}
+		}
 
 		[InitializeOnLoadMethod]
-		static void InitializeOnLoad()
+		static void OnInitializeOnLoadMethod()
 		{
 			EditorApplication.update -= OnUpdate;
 			EditorApplication.update += OnUpdate;
@@ -36,23 +65,22 @@ namespace jwellone.Toolbar.Editor
 			try
 			{
 #if UNITY_2021_1_OR_NEWER
-				var toolbars = Resources.FindObjectsOfTypeAll(TOOLBAR_TYPE);
-				var toolbar = toolbars.Length > 0 ? toolbars[0] : null;
 				if (toolbar == null)
 				{
 					return;
 				}
 
 				var fieldInfo = toolbar.GetType().GetField("m_Root", BINDING_ATTR);
-				var rootElement = fieldInfo.GetValue(toolbar) as VisualElement;
-				var areaNames = new string[] { "ToolbarZoneLeftAlign", "ToolbarZoneRightAlign" };
+				var rootElement = fieldInfo?.GetValue(toolbar) as VisualElement;
+				var areaNames = new[] { "ToolbarZoneLeftAlign", "ToolbarZoneRightAlign" };
 				var actions = new Action[] { OnGUILeft, OnGUIRight };
 				for (var i = 0; i < actions.Length; ++i)
 				{
 					var area = rootElement.Q(areaNames[i]);
 					var element = new VisualElement()
 					{
-						style = {
+						style =
+						{
 							flexGrow = 1,
 							flexDirection = FlexDirection.Row,
 						}
@@ -69,8 +97,7 @@ namespace jwellone.Toolbar.Editor
 					area.Add(element);
 				}
 #else
-
-				var toolbar = TOOLBAR_GET.GetValue(null);
+				var toolbar = TOOLBAR_TYPE.GetField("get").GetValue(null);
 				if (toolbar == null)
 				{
 					return;
@@ -101,7 +128,7 @@ namespace jwellone.Toolbar.Editor
 			}
 			catch (Exception ex)
 			{
-				Debug.LogError($"[ToolBarExtension]{ex.ToString()}");
+				Debug.LogError($"[ToolBarExtension]{ex}");
 			}
 
 			EditorApplication.update -= OnUpdate;
@@ -132,9 +159,13 @@ namespace jwellone.Toolbar.Editor
 		{
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-
-			foreach (var ui in s_leftAreaGuis)
+			foreach (var ui in uiList)
 			{
+				if (!ui.valid || ui.area != ToolbarUI.Area.Left)
+				{
+					continue;
+				}
+
 				ui.OnGUI();
 			}
 
@@ -144,94 +175,28 @@ namespace jwellone.Toolbar.Editor
 		static void OnGUIRight()
 		{
 			GUILayout.BeginHorizontal();
-			foreach (var ui in s_rightAreaGuis)
+			foreach (var ui in uiList)
 			{
+				if (!ui.valid || ui.area != ToolbarUI.Area.Right)
+				{
+					continue;
+				}
+
 				ui.OnGUI();
 			}
+
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 		}
 
-		public static void AddLeftArea(in IGUI ui)
+		public static T[] Find<T>() where T : ToolbarUI
 		{
-			s_leftAreaGuis.Add(ui);
+			return ToolbarCacheData.Find<T>();
 		}
 
-		public static void AddRightArea(in IGUI ui)
+		public static void Repaint()
 		{
-			s_rightAreaGuis.Add(ui);
-		}
-
-		public static bool Remove(in IGUI ui)
-		{
-			var result = false;
-			if (s_leftAreaGuis.Contains(ui))
-			{
-				result |= s_leftAreaGuis.Remove(ui);
-			}
-
-			if (s_rightAreaGuis.Contains(ui))
-			{
-				result |= s_rightAreaGuis.Remove(ui);
-			}
-
-			return result;
-		}
-
-		public static IGUI Find(string name)
-		{
-			var target = s_leftAreaGuis.Find(ui => ui.Name == name);
-			if (target != null)
-			{
-				return target;
-			}
-
-			target = s_rightAreaGuis.Find(ui => ui.Name == name);
-			if (target != null)
-			{
-				return target;
-			}
-
-			return null;
-		}
-
-		public static T Find<T>(string name) where T : class, IGUI
-		{
-			var targetType = typeof(T);
-			var target = s_leftAreaGuis.Find(ui => ui.Name == name && ui.GetType() == targetType);
-			if (target != null)
-			{
-				return target as T;
-			}
-
-			target = s_rightAreaGuis.Find(ui => ui.Name == name && ui.GetType() == targetType);
-			if (target != null)
-			{
-				return target as T;
-			}
-
-			return null;
-		}
-
-		public static T[] Find<T>() where T : class, IGUI
-		{
-			var targetType = typeof(T);
-			var left = s_leftAreaGuis.FindAll(ui => ui.GetType() == targetType);
-			var right = s_rightAreaGuis.FindAll(ui => ui.GetType() == targetType);
-
-			var array = new T[left.Count + right.Count];
-			var index = 0;
-			foreach (var t in left)
-			{
-				array[index++] = t as T;
-			}
-
-			foreach (var t in right)
-			{
-				array[index++] = t as T;
-			}
-
-			return array;
+			repaintMethod?.Invoke(toolbar, null);
 		}
 	}
 }

@@ -1,10 +1,17 @@
 {
-    "name": "ToolbarExtension.Sample.Editor",
+    "name": "jwellone.ToolbarExtension.Sample.Editor",
+    "rootNamespace": "",
     "references": [
         "GUID:dfa2308fcbbe84fd98410fca546e89ff"
     ],
     "includePlatforms": [
-        "Editor"
+        "Editor",
+        "tvOS",
+        "WSA",
+        "WebGL",
+        "WindowsStandalone32",
+        "WindowsStandalone64",
+        "XboxOne"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
