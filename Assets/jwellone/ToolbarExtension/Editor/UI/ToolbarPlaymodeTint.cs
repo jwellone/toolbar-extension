@@ -6,9 +6,9 @@ using System.Reflection;
 
 #nullable enable
 
-namespace jwelloneEditor.Toolbar.Sample
+namespace jwelloneEditor.Toolbar
 {
-	public class SampleToolbarPlaymodeTint : ToolbarUI
+	public class ToolbarPlaymodeTint : ToolbarUI
 	{
 		const BindingFlags BINDING_FLAGS = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 		public override string name => "Playmode tint";
@@ -37,7 +37,7 @@ namespace jwelloneEditor.Toolbar.Sample
 			}
 		}
 
-		public SampleToolbarPlaymodeTint()
+		public ToolbarPlaymodeTint()
 			: base()
 		{
 			var types = typeof(Editor).Assembly.GetTypes();
