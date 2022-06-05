@@ -116,7 +116,7 @@ namespace jwelloneEditor.Toolbar
 				var visualTree = iWindowBackend.GetProperty("visualTree", BINDING_ATTR);
 				var onGUIHandle = typeof(IMGUIContainer).GetField("m_OnGUIHandler", BINDING_ATTR);
 				var visualElement = visualTree.GetValue(windowBackend.GetValue(toolbar), null) as VisualElement;
-				var imguiContainer = visualElement[0] as IMGUIContainer;
+				var imguiContainer = visualElement?[0] as IMGUIContainer;
 				var handler = onGUIHandle.GetValue(imguiContainer) as Action;
 #endif
 
