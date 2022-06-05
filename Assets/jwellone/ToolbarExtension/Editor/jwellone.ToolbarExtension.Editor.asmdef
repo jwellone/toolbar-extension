@@ -1,5 +1,6 @@
 {
-    "name": "ToolbarExtension.Editor",
+    "name": "jwellone.ToolbarExtension.Editor",
+    "rootNamespace": "",
     "references": [],
     "includePlatforms": [
         "Editor"
